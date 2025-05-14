@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Tide AI</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- External CSS -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Prism.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <!-- Google Fonts for Tide branding -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <span>tide</span>&nbsp;<strong>AI</strong>
+        </div>
+        
+        <div class="new-chat">
+            <span>New Chat</span>
+            <span>⌘ K</span>
+        </div>
+        
+        <a href="#" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        
+        <a href="#" class="nav-item">
+            <i class="fas fa-lightbulb"></i>
+            <span>Show Helpful Tips</span>
+        </a>
+        
+        <div class="nav-item-with-action">
+            <a href="#" class="nav-item">
+                <i class="fas fa-search"></i>
+                <span>Queries</span>
+            </a>
+            <button id="clearQueriesBtn" class="clear-btn" title="Clear query history">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+        
+        <div class="sidebar-footer">
+            <!-- Tide Careers Promotion -->
+            <div class="sidebar-careers-promotion">
+                <h4>Join Our Team at Tide!</h4>
+                <p>If you want to work with me and learn more, you can join Tide or visit our kiosk.</p>
+                <div class="careers-actions">
+                    <div class="sidebar-careers-qr">
+                        <img id="tideQrCode" alt="Tide Careers QR Code">
+                    </div>
+                    <a href="http://tide.co/careers" target="_blank" class="sidebar-careers-button">
+                        <i class="fas fa-briefcase"></i> View Careers
+                    </a>
+                </div>
+            </div>
+            
+            <a href="#" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="chat-container">
+            <div class="greeting">
+<!--                <div class="tide-branding">-->
+<!--                    <div class="tide-portal"></div>-->
+<!--                </div>-->
+                <h1>Good afternoon, there.</h1>
+                <p>How can I help you today?</p>
+            </div>
+            
+            <div class="input-area">
+                <div class="input-container">
+                    <textarea id="query" placeholder="What do you want to know?"></textarea>
+                    <div class="input-controls">
+                        <div class="input-options">
+                            <div class="dropdown">
+                                <button class="option-button" id="sourceButton">
+                                    <i class="fas fa-globe"></i>
+                                    <span id="selectedSource">All Sources</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div class="dropdown-content" id="sourceDropdown">
+                                    <a href="#" data-value="ALL">All Sources</a>
+                                    <a href="#" data-value="CONFLUENCE">Confluence</a>
+                                    <a href="#" data-value="JIRA">Jira</a>
+                                </div>
+                            </div>
+                            <div class="dropdown">
+                                <button class="option-button" id="searchTypeButton">
+                                    <i class="fas fa-search"></i>
+                                    <span id="selectedSearchType">Auto-discover</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div class="dropdown-content" id="searchTypeDropdown">
+                                    <a href="#" data-value="true">Auto-discover</a>
+                                    <a href="#" data-value="false">Manual</a>
+                                </div>
+                            </div>
+                        </div>
+                        <button id="submitButton" class="send-button">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="query-types">
+                <div class="query-type">
+                    <i class="fas fa-search"></i>
+                    <span>Research</span>
+                </div>
+                <div class="query-type">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>How to</span>
+                </div>
+                <div class="query-type">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analyze</span>
+                </div>
+                <div class="query-type">
+                    <i class="fas fa-code"></i>
+                    <span>Code</span>
+                </div>
+                <div class="query-type">
+                    <i class="fas fa-newspaper"></i>
+                    <span>Latest Updates</span>
+                </div>
+                <div class="query-type">
+                    <i class="fas fa-comment-dots"></i>
+                    <span>Give me advice</span>
+                </div>
+            </div>
+            
+            <div id="loader" class="loader hidden"></div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <!-- Messages will be added here dynamically -->
+            </div>
+            
+            <!-- Helpful Tips Page -->
+            <div id="helpfulTips" class="page-content hidden">
+                <h2>Helpful Tips</h2>
+                <div class="tips-container">
+                    <div class="tip-card">
+                        <div class="tip-icon"><i class="fas fa-lightbulb"></i></div>
+                        <div class="tip-content">
+                            <h3>Use Clear Questions</h3>
+                            <p>Ask specific questions to get more accurate answers. Include relevant keywords.</p>
+                        </div>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-icon"><i class="fas fa-keyboard"></i></div>
+                        <div class="tip-content">
+                            <h3>Keyboard Shortcuts</h3>
+                            <p>Press Cmd+K (Mac) or Ctrl+K (Windows) to quickly focus the search box.</p>
+                        </div>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-icon"><i class="fas fa-filter"></i></div>
+                        <div class="tip-content">
+                            <h3>Filter Sources</h3>
+                            <p>Use the source dropdown to narrow down where to search for information.</p>
+                        </div>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-icon"><i class="fas fa-history"></i></div>
+                        <div class="tip-content">
+                            <h3>Query History</h3>
+                            <p>Your recent queries are saved in the sidebar for easy access.</p>
+                        </div>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-icon"><i class="fas fa-search"></i></div>
+                        <div class="tip-content">
+                            <h3>Search Types</h3>
+                            <p>Toggle between auto-discovery and manual search depending on your needs.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Settings Page -->
+            <div id="settingsPage" class="page-content hidden">
+                <h2>Settings</h2>
+                <div class="settings-section">
+                    <h3>Keyboard Shortcuts</h3>
+                    <div class="shortcut-list">
+                        <div class="shortcut-item">
+                            <div class="shortcut-keys">
+                                <span class="key">Cmd</span><span>+</span><span class="key">K</span>
+                                <span class="key-alt">(or Ctrl+K)</span>
+                            </div>
+                            <div class="shortcut-desc">Focus on search input</div>
+                        </div>
+                        <div class="shortcut-item">
+                            <div class="shortcut-keys">
+                                <span class="key">Esc</span>
+                            </div>
+                            <div class="shortcut-desc">Clear search input</div>
+                        </div>
+                        <div class="shortcut-item">
+                            <div class="shortcut-keys">
+                                <span class="key">Enter</span>
+                            </div>
+                            <div class="shortcut-desc">Submit query</div>
+                        </div>
+                        <div class="shortcut-item">
+                            <div class="shortcut-keys">
+                                <span class="key">Shift</span><span>+</span><span class="key">Enter</span>
+                            </div>
+                            <div class="shortcut-desc">New line in query</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- External JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <!-- QR Code Generator -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <script th:src="@{/js/app.js}"></script>
+</body>
+</html> 

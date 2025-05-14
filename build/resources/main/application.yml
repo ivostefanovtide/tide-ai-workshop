@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: tide-ai-backend
+server:
+  port: 8080
+tide:
+  llm:
+    provider: ollama # Can be 'ollama' or other providers you implement
+  search:
+    provider: ollama # Can be 'opensearch' or 'aurora'
+aws:
+  region: us-east-1
+  bedrock:
+    model-id: anthropic.claude-v2
+  opensearch:
+    endpoint: https://your-opensearch-endpoint
