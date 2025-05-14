@@ -23,6 +23,7 @@ Welcome to the Tide AI backend workshop! This repository contains everything you
 - [The One API (Setting Up Ollama)](#the-one-api-setting-up-ollama)
 - [The Fellowship of the Code (Contributing)](#the-fellowship-of-the-code-contributing)
 - [Resistance Intel (Troubleshooting)](#resistance-intel-troubleshooting)
+- [🔍 Implementing Search Service with Brave Search API](#implementing-search-service-with-brave-search-api)
 
 ## 🔮 The Prophecy (About)
 
@@ -144,3 +145,61 @@ Remember, with great AI power comes great responsibility. Use this application f
 ---
 
 Made with ❤️ and a lot of coffee ☕ (the primary fuel source of developers across all galaxies) 
+
+## 🔍 Implementing Search Service with Brave Search API
+
+To implement your own search service using the Brave Search API:
+
+1. Sign up for a free API key at [Brave Search API](https://brave.com/search/api/) (get 2,000 free queries per month)
+
+2. Create a new class that implements the `SearchService` interface:
+   ```java
+   @Service
+   public class BraveSearchService implements SearchService {
+       
+       private final String apiKey;
+       private final RestTemplate restTemplate;
+       
+       public BraveSearchService(@Value("${brave.search.api-key}") String apiKey) {
+           this.apiKey = apiKey;
+           this.restTemplate = new RestTemplate();
+       }
+       
+       @Override
+       public List<String> search(String query, int maxResults) {
+           // Implement your search logic using Brave Search API
+           // Documentation available at: https://brave.com/search/api/docs/
+           
+           // Example implementation:
+           String url = "https://api.search.brave.com/res/v1/web/search?q=" + 
+                         URLEncoder.encode(query, StandardCharsets.UTF_8) + 
+                         "&count=" + maxResults;
+           
+           HttpHeaders headers = new HttpHeaders();
+           headers.set("Accept", "application/json");
+           headers.set("X-Subscription-Token", apiKey);
+           
+           HttpEntity<String> entity = new HttpEntity<>(headers);
+           ResponseEntity<BraveSearchResponse> response = 
+               restTemplate.exchange(url, HttpMethod.GET, entity, BraveSearchResponse.class);
+           
+           // Process and return results
+           return processResults(response.getBody());
+       }
+       
+       private List<String> processResults(BraveSearchResponse response) {
+           // Extract relevant information from the response
+           // This will depend on the structure of the Brave Search API response
+           // Return the results as a list of strings
+       }
+   }
+   ```
+
+3. Add your Brave API key to `application.properties` or `application.yml`:
+   ```properties
+   brave.search.api-key=your_api_key_here
+   ```
+
+4. Configure your application to use the BraveSearchService by ensuring it gets autowired correctly in your dependency injection setup.
+
+Note: Be sure to respect Brave's usage terms and rate limits. The free tier provides up to 2,000 queries per month at 1 query per second, which should be sufficient for development and testing purposes. 
