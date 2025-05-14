@@ -14,7 +14,6 @@ import java.util.ArrayList;
 public class OllamaLlmService implements QueryAnalyzer, AnswerCompiler {
 
     private final WebClient webClient;
-    private final String ollamaBaseUrl;
     private final String modelName;
     private final boolean useGenerateEndpoint; // Whether to use /api/generate instead of /api/chat
 
@@ -23,7 +22,6 @@ public class OllamaLlmService implements QueryAnalyzer, AnswerCompiler {
             @Value("${ollama.base-url:http://localhost:11434}") String ollamaBaseUrl,
             @Value("${ollama.model:llama3.2}") String modelName,
             @Value("${ollama.use-generate-endpoint:true}") boolean useGenerateEndpoint) {
-        this.ollamaBaseUrl = ollamaBaseUrl;
         this.modelName = modelName;
         this.useGenerateEndpoint = useGenerateEndpoint;
         this.webClient = webClientBuilder.baseUrl(ollamaBaseUrl).build();
@@ -50,7 +48,7 @@ public class OllamaLlmService implements QueryAnalyzer, AnswerCompiler {
     public String generateAnswer(String prompt, List<String> context) {
         String fullPrompt = prompt;
         if (context != null && !context.isEmpty()) {
-            fullPrompt += "\nContext:\n" + String.join("\n", context);
+            fullPrompt += "\nUse This Context as most recent:\n" + String.join("\n", context);
         }
         return invokeOllama(fullPrompt);
     }

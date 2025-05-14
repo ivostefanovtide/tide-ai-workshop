@@ -19,7 +19,7 @@ public class DefaultPlanner implements Planner {
 
     public DefaultPlanner(@Qualifier("ollamaLlmService") QueryAnalyzer queryAnalyzer,
                           @Qualifier("ollamaLlmService") AnswerCompiler answerCompiler,
-                          @Qualifier("openSearchService") SearchService searchService) {
+                          @Qualifier("braveSearchService") SearchService searchService) {
         this.queryAnalyzer = queryAnalyzer;
         this.answerCompiler = answerCompiler;
         this.searchService = searchService;
@@ -41,7 +41,7 @@ public class DefaultPlanner implements Planner {
 
     private QueryResponse executeSimpleSearch(QueryRequest request) {
         List<String> results = searchService.search(request.getQuery(), request.getDataSource());
-        String answer = answerCompiler.generateAnswer("Answer the following question: " + request.getQuery(), results);
+        String answer = answerCompiler.generateAnswer("Answer the following question using the results as they are more accurate coming from a search engine: " + request.getQuery(), results);
         QueryResponse response = new QueryResponse();
         response.setAnswer(answer);
         response.setReferences(results.toArray(new String[0]));
@@ -62,7 +62,7 @@ public class DefaultPlanner implements Planner {
         List<String> results = parts.stream()
                 .flatMap(part -> searchService.searchWithEmbedding(part, request.getDataSource()).stream())
                 .toList();
-        String answer = answerCompiler.generateAnswer("Answer the following question: " + request.getQuery(), results);
+        String answer = answerCompiler.generateAnswer("Answer the following question:" + request.getQuery(), results);
         QueryResponse response = new QueryResponse();
         response.setAnswer(answer);
         response.setReferences(results.toArray(new String[0]));

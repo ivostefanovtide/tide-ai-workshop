@@ -166,7 +166,7 @@ To implement your own search service using the Brave Search API:
        }
        
        @Override
-       public List<String> search(String query, int maxResults) {
+       public List<String> search(String query) {
            // Implement your search logic using Brave Search API
            // Documentation available at: https://brave.com/search/api/docs/
            
@@ -202,4 +202,7 @@ To implement your own search service using the Brave Search API:
 
 4. Configure your application to use the BraveSearchService by ensuring it gets autowired correctly in your dependency injection setup.
 
-Note: Be sure to respect Brave's usage terms and rate limits. The free tier provides up to 2,000 queries per month at 1 query per second, which should be sufficient for development and testing purposes. 
+Note: Be sure to respect Brave's usage terms and rate limits. The free tier provides up to 2,000 queries per month at 1 query per second, which should be sufficient for development and testing purposes.
+
+
+BRAVE KEY: BSAtG6R5nW3v7YbeDbg8W0bWoegrINM
